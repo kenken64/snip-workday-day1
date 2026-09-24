@@ -1,3 +1,5 @@
+import { resolve } from "node:path";
+
 const base62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 const links = new Map();
 
@@ -38,7 +40,7 @@ function isValidHttpUrl(value) {
   if (typeof value !== "string") return false;
   try {
     const url = new URL(value);
-    return ["http:", "https:"\].includes\(url.protocol\)\;
+    return ["http:", "https:"].includes(url.protocol);
   } catch {
     return false;
   }
@@ -49,9 +51,9 @@ async function serveStaticFile(requestPath) {
   if (!publicDir) return null;
 
   const pathname = requestPath === "/" ? "/index.html" : requestPath;
-  const safePath = pathname.replace(/^\/+/, "").split("/").filter(Boolean);
+  const safePath = pathname.replace(/^\/+/, "").split("/").filter((part) => part && part !== "." && part !== "..");
   const target = safePath.length ? safePath.join("/") : "index.html";
-  const fullPath = import.meta.dir + "/" + target;
+  const fullPath = resolve(import.meta.dir, publicDir, target);
   const file = Bun.file(fullPath);
   if (await file.exists()) {
     const contentType = fullPath.endsWith(".html") ? "text/html; charset=utf-8" : undefined;
