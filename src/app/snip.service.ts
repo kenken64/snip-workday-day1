@@ -13,12 +13,13 @@ export interface LinkItem {
 @Injectable({ providedIn: 'root' })
 export class SnipService {
   private readonly http = inject(HttpClient);
+  private readonly linksUrl = '/api/links';
 
   createLink(url: string): Observable<LinkItem> {
-    return this.http.post<LinkItem>('http://localhost:3000/api/links', { url });
+    return this.http.post<LinkItem>(this.linksUrl, { url });
   }
 
   getLinks(): Observable<LinkItem[]> {
-    return this.http.get<LinkItem[]>('http://localhost:3000/api/links');
+    return this.http.get<LinkItem[]>(this.linksUrl);
   }
 }
