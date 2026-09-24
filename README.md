@@ -19,6 +19,7 @@ The backend listens on `http://localhost:3000` by default and stores links in me
 | `backend/` | `backend` | Bun HTTP API and redirects |
 | `frontend/` | `frontend` | Angular web client |
 | `cli/` | `cli` | CommonJS Node.js command-line client |
+| `bundle/` | `bundle` | Generated deployable backend, web client, and CLI |
 
 The entries are Git submodules, not copied source directories. Clone recursively so their contents are populated:
 
@@ -61,6 +62,20 @@ cd cli
 ```
 
 The CLI uses `http://localhost:3000` by default. Set `SNIP_API` to target another backend.
+
+## Build the release bundle
+
+The `bundle/` submodule is generated output and must not be edited by hand. Build it from the source branch tips with Node.js 18 or newer:
+
+```sh
+node scripts/build-bundle.mjs
+```
+
+The builder updates the source submodules, installs and builds the Angular client, assembles the Bun release, and commits changed bundle and superproject pointers. Add `--push` to push the generated `bundle` branch and `main` after a successful build:
+
+```sh
+node scripts/build-bundle.mjs --push
+```
 
 ## Update a layer
 
