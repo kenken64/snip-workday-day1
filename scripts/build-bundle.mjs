@@ -19,12 +19,12 @@ if (unknownArgs.length > 0) {
   process.exit(1);
 }
 
-function commandName(name) {
-  return process.platform === 'win32' && name === 'npm' ? 'npm.cmd' : name;
-}
-
 function run(command, args, cwd = rootDir, stdio = 'inherit') {
-  const result = spawnSync(commandName(command), args, { cwd, stdio });
+  const result = spawnSync(command, args, {
+    cwd,
+    stdio,
+    shell: process.platform === 'win32' && command === 'npm'
+  });
 
   if (result.error) {
     throw new Error(`Could not run ${command}: ${result.error.message}`);
@@ -38,7 +38,7 @@ function run(command, args, cwd = rootDir, stdio = 'inherit') {
 }
 
 function hasStagedChanges(cwd, paths) {
-  const result = spawnSync(commandName('git'), ['diff', '--cached', '--quiet', '--', ...paths], {
+  const result = spawnSync('git', ['diff', '--cached', '--quiet', '--', ...paths], {
     cwd,
     stdio: 'ignore'
   });
